@@ -84,7 +84,57 @@
             </table>
         </section>
     </main>
+    <div class="container">
+        <h1>Форма обратной связи</h1>
 
+        <form class="feedback-form" action="https://httpbin.org/post" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="fio">ФИО</label>
+                <input type="text" id="fio" name="fio" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Откуда узнали о нас?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="source" value="search" required> Поисковая система</label>
+                    <label><input type="radio" name="source" value="social"> Социальные сети</label>
+                    <label><input type="radio" name="source" value="friend"> Рекомендация друга</label>
+                    <label><input type="radio" name="source" value="other"> Другое</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="type">Тип обращения</label>
+                <select id="type" name="type" class="form-control" required>
+                    <option value="">-- Выберите тип --</option>
+                    <option value="complaint">Жалоба</option>
+                    <option value="suggestion">Предложение</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Текст сообщения</label>
+                <textarea id="message" name="message" class="form-control" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="attachment">Вложения</label>
+                <input type="file" id="attachment" name="attachment" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="consent" required> Даю согласие на обработку персональных данных</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Отправить</button>
+        </form>
     <footer id="contacts">
         <h2>Контакты</h2>
         <p>Телефон: <a href="tel:+74951234567">+7 (495) 123-45-67</a></p>
