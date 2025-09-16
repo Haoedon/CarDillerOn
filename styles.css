@@ -13,6 +13,13 @@
             min-height: 100vh;
         }
 
+        .text{
+            font-family: "Rubik", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -26,6 +33,7 @@
             text-align: center;
             margin-bottom: 2rem;
             border-radius: 8px;
+            animation: slide 3s linear infinite;
         }
 
         header h1 {
@@ -289,3 +297,102 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+.cars-section {
+    margin-bottom: 60px;
+}
+
+.cars-section h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #333;
+}
+
+.cars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.car-item {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 40px;
+    border-radius: 35px;
+    background-color: white;
+    cursor: pointer;
+    filter: drop-shadow(17px 19px 24px rgba(0, 0, 0, 0.13));
+    transition: all 0.1s ease;
+}
+
+.car-item:hover {
+    border: 2px solid tomato;
+}
+
+.car-item:hover button {
+    background-color: tomato;
+    color: white;
+}
+
+.car-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 35px;
+    margin-bottom: 20px;
+}
+
+.car-price {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.car-name {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.car-specs {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.car-item button {
+    background-color: #f1eee9;
+    padding: 10px 30px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: auto;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Стили для навигации */
+.nav-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.nav-container a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-container a:hover {
+    color: tomato;
+}
+
+.nav-container a.active {
+    color: tomato;
+}
