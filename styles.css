@@ -626,3 +626,306 @@
     color: #e74c3c;
     font-style: italic;
 }
+/* Стили для блока комплектаций */
+.configurations-section {
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+}
+
+.configurations-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+.configurations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.configuration-item {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.configuration-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.configuration-item.selected {
+    border-color: #3498db;
+    background-color: #ecf0f1;
+}
+
+.configuration-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.configuration-header h3 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.configuration-price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.configuration-features {
+    margin-bottom: 15px;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-3px) scale(1.02);
+}
+
+.feature-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover .feature-image {
+    transform: translateY(-5px) scale(1.1);
+}
+
+.feature-caption {
+    font-weight: 500;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.feature-description {
+    font-size: 12px;
+    color: #7f8c8d;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.select-config-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.select-config-btn:hover {
+    background-color: #2980b9;
+}
+
+.select-config-btn.selected {
+    background-color: #27ae60;
+}
+
+/* Стили для дополнительных услуг */
+.additional-services {
+    padding: 40px 20px;
+    background-color: #ecf0f1;
+}
+
+.additional-services h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.service-item {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-3px);
+}
+
+.service-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+}
+
+.service-item:hover .service-image {
+    transform: translateY(-3px) scale(1.05);
+}
+
+.service-name {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.service-description {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+.service-price {
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 10px;
+}
+
+.add-service-btn {
+    width: 100%;
+    padding: 8px;
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-service-btn:hover {
+    background-color: #7f8c8d;
+}
+
+.add-service-btn.added {
+    background-color: #27ae60;
+}
+
+/* Стили для модального окна */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.modal-content h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-btn {
+    padding: 12px 30px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.modal-btn:hover {
+    background-color: #2980b9;
+    color: #ecf0f1;
+    transform: scale(1.05);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .configurations-grid,
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .configurations-grid,
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        margin: 10px;
+        min-width: auto;
+    }
+}
+/* Стили для элементов корзины */
+.cart-item.config-item {
+    border-left: 4px solid #3498db;
+    background-color: #ecf0f1;
+}
+
+.cart-item.service-item {
+    border-left: 4px solid #9b59b6;
+    background-color: #f8f9fa;
+}
+
+.cart-item.config-item .cart-item-specs,
+.cart-item.service-item .cart-item-specs {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+/* Анимации для уведомлений корзины */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}

@@ -41,6 +41,30 @@
 <main>
     <!-- Контент будет генерироваться динамически через JavaScript -->
 </main>
+<!-- Блок с комплектациями автомобилей -->
+<section class="configurations-section">
+    <h2>Доступные комплектации</h2>
+    <div class="configurations-grid" id="configurationsGrid">
+        <!-- Контент будет генерироваться через JavaScript -->
+    </div>
+</section>
+
+<!-- Блок с дополнительными услугами -->
+<section class="additional-services">
+    <h2>Дополнительные услуги</h2>
+    <div class="services-grid" id="servicesGrid">
+        <!-- Контент будет генерироваться через JavaScript -->
+    </div>
+</section>
+
+<!-- Модальное окно для уведомлений -->
+<div id="notificationModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Уведомление</h3>
+        <p id="modalMessage"></p>
+        <button id="modalOkBtn" class="modal-btn">Окей</button>
+    </div>
+</div>
 
 <div class="container">
     <center><h1>Оформление заказа</h1></center>
@@ -104,5 +128,6 @@
 
 <!-- Подключаем скрипт сортировки -->
 <script src="car-sorting.js"></script>
+<script src="configurations.js"></script>
 </body>
 </html>
