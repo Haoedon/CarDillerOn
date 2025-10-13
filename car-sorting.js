@@ -1,104 +1,72 @@
-const carsData = [
-    {
-        name: "TOYOTA COROLLA 2014",
-        latinName: "toyota_corolla_2014",
-        category: "Седаны",
-        price: "900 000 ₽",
-        specs: "1.5 л, 132 л.с., МКПП",
-        image: "imgs/Toyota_Corolla.jpg",
-        horsepower: 132,
-        priceValue: 900000
-    },
-    {
-        name: "Nissan Skyline X (R34)",
-        latinName: "nissan_skyline_r34",
-        category: "Седаны",
-        price: "4 600 000 ₽",
-        specs: "2.5 л, 200 л.с., МКПП",
-        image: "imgs/Nissan_Skyline_R34_GT-R_Nür_002.jpg",
-        horsepower: 200,
-        priceValue: 4600000
-    },
-    {
-        name: "Honda ZR-V Lifestyle",
-        latinName: "honda_zrv_lifestyle",
-        category: "Седаны",
-        price: "3 218 000 ₽",
-        specs: "1.5 л, 182 л.с., АКПП",
-        image: "imgs/honda_zrv.jpg",
-        horsepower: 182,
-        priceValue: 3218000
-    },
-    {
-        name: "Nissan PathFinder 2014",
-        latinName: "nissan_pathfinder_2014",
-        category: "Внедорожники",
-        price: "800 000 ₽",
-        specs: "3.5 л, 249 л.с., АКПП",
-        image: "imgs/Pathfinder.jpg",
-        horsepower: 249,
-        priceValue: 800000
-    },
-    {
-        name: "Daihatsu Rocky A200, 2020",
-        latinName: "daihatsu_rocky_a200",
-        category: "Внедорожники",
-        price: "1 100 000 ₽",
-        specs: "1.0 л, 98 л.с., АКПП",
-        image: "imgs/Rocky_a200.jpg",
-        horsepower: 98,
-        priceValue: 1100000
-    },
-    {
-        name: "Suzuki Grand Vitara II Рестайлинг, 2012",
-        latinName: "suzuki_grand_vitara_2012",
-        category: "Внедорожники",
-        price: "789 000 ₽",
-        specs: "2.4 л, 169 л.с., МКПП",
-        image: "imgs/Suzuki_vitara.jpg",
-        horsepower: 169,
-        priceValue: 789000
-    },
-    {
-        name: "SUZUKI WAGON R MH85S IAT, 2023",
-        latinName: "suzuki_wagon_r_2023",
-        category: "Кей-кары",
-        price: "1 135 000 ₽",
-        specs: "0.66 л, 64 л.с., АКПП",
-        image: "imgs/Suzuki_wagon.jpg",
-        horsepower: 64,
-        priceValue: 1135000
-    },
-    {
-        name: "Honda N-BOX, 2020",
-        latinName: "honda_n_box_2020",
-        category: "Кей-кары",
-        price: "1 250 000 ₽",
-        specs: "0.7 л, 58 л.с., АКПП",
-        image: "imgs/Honda_N_Box.jpg",
-        horsepower: 58,
-        priceValue: 1250000
-    },
-    {
-        name: "DAIHATSU TANTO X, 2024",
-        latinName: "daihatsu_tanto_x_2024",
-        category: "Кей-кары",
-        price: "1 670 000 ₽",
-        specs: "0.7 л, 52 л.с., АКПП",
-        image: "imgs/Daihatsu_Tanto.jpg",
-        horsepower: 52,
-        priceValue: 1670000
-    }
-];
+// car-sorting.js
 
-// Корзина для хранения выбранных автомобилей
+// Глобальные переменные
+let carsData = [];
 let shoppingCart = [];
-// Состояние фильтров для каждой категории
 let filterState = {
     'Седаны': false,
     'Внедорожники': false,
     'Кей-кары': false
 };
+
+// Функция для загрузки данных об автомобилях через API
+function loadCars() {
+    const apiSources = [
+        'https://raw.githubusercontent.com/Haoedon/CarDillerOn/main/cars.json',
+        './cars.json'
+    ];
+
+    return tryApiSources(apiSources, 0);
+}
+
+function tryApiSources(sources, index) {
+    if (index >= sources.length) {
+        console.log('Все источники недоступны, используем демо-данные');
+        return Promise.resolve(getDemoCars());
+    }
+
+    return fetch(sources[index])
+        .then(response => {
+            if (!response.ok) throw new Error('API не доступен');
+            return response.json();
+        })
+        .then(cars => {
+            console.log(`Данные загружены из источника: ${sources[index]}`);
+            return cars;
+        })
+        .catch(error => {
+            console.log(`Источник ${sources[index]} не доступен, пробуем следующий...`);
+            return tryApiSources(sources, index + 1);
+        });
+}
+
+// Демо-данные на случай недоступности API
+function getDemoCars() {
+    const demoCars = [
+        {
+            "name": "TOYOTA COROLLA 2014",
+            "latinName": "toyota_corolla_2014",
+            "category": "Седаны",
+            "price": "900 000 ₽",
+            "specs": "1.5 л, 132 л.с., МКПП",
+            "image": "imgs/Toyota_Corolla.jpg",
+            "horsepower": 132,
+            "priceValue": 900000
+        },
+        {
+            "name": "Nissan Skyline X (R34)",
+            "latinName": "nissan_skyline_r34",
+            "category": "Седаны",
+            "price": "4 600 000 ₽",
+            "specs": "2.5 л, 200 л.с., МКПП",
+            "image": "imgs/Nissan_Skyline_R34_GT-R_Nür_002.jpg",
+            "horsepower": 200,
+            "priceValue": 4600000
+        }
+    ];
+    console.log('Используются демо-данные автомобилей');
+    return demoCars;
+}
 
 // Функция для создания HTML элемента автомобиля
 function createCarElement(car) {
@@ -107,7 +75,7 @@ function createCarElement(car) {
     carElement.setAttribute('data-car', car.latinName);
 
     carElement.innerHTML = `
-        <img src="${car.image}" alt="${car.name}">
+        <img src="${car.image}" alt="${car.name}" onerror="this.src='imgs/car-placeholder.jpg'">
         <p class="car-price">${car.price}</p>
         <p class="car-name">${car.name}</p>
         <p class="car-specs">${car.specs}</p>
@@ -126,14 +94,10 @@ function addToCart(car) {
 
 // Функция для показа уведомления о добавлении в корзину
 function showCartNotification(carName) {
-    // Создаем элемент уведомления
     const notification = document.createElement('div');
     notification.className = 'cart-notification';
-    notification.innerHTML = `
-        <span>✅ "${carName}" добавлен в корзину</span>
-    `;
+    notification.innerHTML = `<span>✅ "${carName}" добавлен в корзину</span>`;
 
-    // Стили для уведомления
     notification.style.cssText = `
         position: fixed;
         top: 20px;
@@ -149,7 +113,6 @@ function showCartNotification(carName) {
 
     document.body.appendChild(notification);
 
-    // Удаляем уведомление через 3 секунды
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease-in';
         setTimeout(() => {
@@ -167,9 +130,15 @@ function updateOrderForm() {
     const cartDataInput = document.getElementById('cartData');
 
     // Сохраняем данные корзины в скрытое поле формы
-    cartDataInput.value = JSON.stringify(shoppingCart);
+    const orderData = {
+        cars: shoppingCart,
+        configuration: window.selectedConfiguration || null,
+        services: window.selectedServices || [],
+        timestamp: new Date().toISOString()
+    };
+    cartDataInput.value = JSON.stringify(orderData);
 
-    if (shoppingCart.length === 0) {
+    if (shoppingCart.length === 0 && !window.selectedConfiguration) {
         orderInfo.innerHTML = '<p class="empty-cart">Корзина пуста. Добавьте автомобили из каталога.</p>';
         totalPriceElement.textContent = '0 ₽';
         return;
@@ -178,6 +147,7 @@ function updateOrderForm() {
     let totalPrice = 0;
     let orderHTML = '<div class="cart-items">';
 
+    // Добавляем автомобили в корзину
     shoppingCart.forEach((car, index) => {
         totalPrice += car.priceValue;
         orderHTML += `
@@ -187,10 +157,48 @@ function updateOrderForm() {
                     <span class="cart-item-specs">${car.specs}</span>
                     <span class="cart-item-price">${car.price}</span>
                 </div>
-                <button class="remove-from-cart-btn" data-index="${index}">✕</button>
+                <button class="remove-from-cart-btn" data-type="car" data-index="${index}">✕</button>
             </div>
         `;
     });
+
+    // Добавляем выбранную комплектацию
+    if (window.selectedConfiguration) {
+        const config = window.configurationsData.find(c => c.id === window.selectedConfiguration);
+        if (config) {
+            totalPrice += config.priceValue;
+            orderHTML += `
+                <div class="cart-item config-item">
+                    <div class="cart-item-info">
+                        <strong>Комплектация: ${config.name}</strong>
+                        <span class="cart-item-specs">Дополнительное оборудование и опции</span>
+                        <span class="cart-item-price">${config.price}</span>
+                    </div>
+                    <button class="remove-from-cart-btn" data-type="config">✕</button>
+                </div>
+            `;
+        }
+    }
+
+    // Добавляем дополнительные услуги
+    if (window.selectedServices && window.selectedServices.length > 0) {
+        window.selectedServices.forEach(serviceId => {
+            const service = window.additionalServices.find(s => s.id === serviceId);
+            if (service) {
+                totalPrice += service.priceValue;
+                orderHTML += `
+                    <div class="cart-item service-item">
+                        <div class="cart-item-info">
+                            <strong>${service.name}</strong>
+                            <span class="cart-item-specs">${service.description}</span>
+                            <span class="cart-item-price">${service.price}</span>
+                        </div>
+                        <button class="remove-from-cart-btn" data-type="service" data-service-id="${serviceId}">✕</button>
+                    </div>
+                `;
+            }
+        });
+    }
 
     orderHTML += '</div>';
     orderInfo.innerHTML = orderHTML;
@@ -199,8 +207,16 @@ function updateOrderForm() {
     // Добавляем обработчики для кнопок удаления
     document.querySelectorAll('.remove-from-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            removeFromCart(index);
+            const type = this.getAttribute('data-type');
+            if (type === 'car') {
+                const index = parseInt(this.getAttribute('data-index'));
+                removeFromCart(index);
+            } else if (type === 'config') {
+                if (window.removeConfiguration) window.removeConfiguration();
+            } else if (type === 'service') {
+                const serviceId = this.getAttribute('data-service-id');
+                if (window.removeService) window.removeService(serviceId);
+            }
         });
     });
 }
@@ -236,7 +252,6 @@ function createFilterControls(category) {
         </label>
     `;
 
-    // Обработчик для чекбокса фильтра
     const checkbox = filterContainer.querySelector('.util-filter');
     checkbox.addEventListener('change', function() {
         filterState[category] = this.checked;
@@ -348,7 +363,6 @@ function createSortControls() {
 
     carsSection.parentNode.insertBefore(sortContainer, carsSection.nextSibling);
 
-    // Обработчик для кнопки применения сортировки
     document.getElementById('applySort').addEventListener('click', function() {
         applyFiltersAndSort();
     });
@@ -356,12 +370,23 @@ function createSortControls() {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    // Заменяем статичный контент на динамический
-    applyFiltersAndSort();
+    // Загружаем данные автомобилей через API
+    loadCars()
+        .then(cars => {
+            carsData = cars;
+            console.log('Автомобили загружены:', carsData);
 
-    // Добавляем элементы управления сортировкой
-    createSortControls();
-
-    // Инициализируем корзину
-    updateOrderForm();
+            // Инициализируем интерфейс после загрузки данных
+            applyFiltersAndSort();
+            createSortControls();
+            updateOrderForm();
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки автомобилей:', error);
+            // Используем демо-данные в случае ошибки
+            carsData = getDemoCars();
+            applyFiltersAndSort();
+            createSortControls();
+            updateOrderForm();
+        });
 });

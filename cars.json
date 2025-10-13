@@ -1,0 +1,92 @@
+[
+  {
+    "name": "TOYOTA COROLLA 2014",
+    "latinName": "toyota_corolla_2014",
+    "category": "Седаны",
+    "price": "900 000 ₽",
+    "specs": "1.5 л, 132 л.с., МКПП",
+    "image": "imgs/Toyota_Corolla.jpg",
+    "horsepower": 132,
+    "priceValue": 900000
+  },
+  {
+    "name": "Nissan Skyline X (R34)",
+    "latinName": "nissan_skyline_r34",
+    "category": "Седаны",
+    "price": "4 600 000 ₽",
+    "specs": "2.5 л, 200 л.с., МКПП",
+    "image": "imgs/Nissan_Skyline_R34_GT-R_Nür_002.jpg",
+    "horsepower": 200,
+    "priceValue": 4600000
+  },
+  {
+    "name": "Honda ZR-V Lifestyle",
+    "latinName": "honda_zrv_lifestyle",
+    "category": "Седаны",
+    "price": "3 218 000 ₽",
+    "specs": "1.5 л, 182 л.с., АКПП",
+    "image": "imgs/honda_zrv.jpg",
+    "horsepower": 182,
+    "priceValue": 3218000
+  },
+  {
+    "name": "Nissan PathFinder 2014",
+    "latinName": "nissan_pathfinder_2014",
+    "category": "Внедорожники",
+    "price": "800 000 ₽",
+    "specs": "3.5 л, 249 л.с., АКПП",
+    "image": "imgs/Pathfinder.jpg",
+    "horsepower": 249,
+    "priceValue": 800000
+  },
+  {
+    "name": "Daihatsu Rocky A200, 2020",
+    "latinName": "daihatsu_rocky_a200",
+    "category": "Внедорожники",
+    "price": "1 100 000 ₽",
+    "specs": "1.0 л, 98 л.с., АКПП",
+    "image": "imgs/Rocky_a200.jpg",
+    "horsepower": 98,
+    "priceValue": 1100000
+  },
+  {
+    "name": "Suzuki Grand Vitara II Рестайлинг, 2012",
+    "latinName": "suzuki_grand_vitara_2012",
+    "category": "Внедорожники",
+    "price": "789 000 ₽",
+    "specs": "2.4 л, 169 л.с., МКПП",
+    "image": "imgs/Suzuki_vitara.jpg",
+    "horsepower": 169,
+    "priceValue": 789000
+  },
+  {
+    "name": "SUZUKI WAGON R MH85S IAT, 2023",
+    "latinName": "suzuki_wagon_r_2023",
+    "category": "Кей-кары",
+    "price": "1 135 000 ₽",
+    "specs": "0.66 л, 64 л.с., АКПП",
+    "image": "imgs/Suzuki_wagon.jpg",
+    "horsepower": 64,
+    "priceValue": 1135000
+  },
+  {
+    "name": "Honda N-BOX, 2020",
+    "latinName": "honda_n_box_2020",
+    "category": "Кей-кары",
+    "price": "1 250 000 ₽",
+    "specs": "0.7 л, 58 л.с., АКПП",
+    "image": "imgs/Honda_N_Box.jpg",
+    "horsepower": 58,
+    "priceValue": 1250000
+  },
+  {
+    "name": "DAIHATSU TANTO X, 2024",
+    "latinName": "daihatsu_tanto_x_2024",
+    "category": "Кей-кары",
+    "price": "1 670 000 ₽",
+    "specs": "0.7 л, 52 л.с., АКПП",
+    "image": "imgs/Daihatsu_Tanto.jpg",
+    "horsepower": 52,
+    "priceValue": 1670000
+  }
+]

@@ -141,8 +141,10 @@ const additionalServices = [
 ];
 
 // Состояние выбранных опций
-let selectedConfiguration = null;
-let selectedServices = [];
+window.selectedConfiguration = null;
+window.selectedServices = [];
+window.configurationsData = configurationsData;
+window.additionalServices = additionalServices;
 
 // Функция для обновления отображения корзины с учетом комплектации и услуг
 function updateOrderForm() {
