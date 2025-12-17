@@ -9,11 +9,68 @@ let filterState = {
     'Кей-кары': false
 };
 
+// LocalStorage key for selected items (store only identifiers)
+const CART_KEY = 'selected_item_ids';
+
+// Simple combos definitions (student can adjust rules)
+const COMBOS = [
+    { id: 'one_or_more', name: 'Одно или более', rule: ids => ids.length >= 1 },
+    { id: 'exact_two', name: 'Точная пара', rule: ids => ids.length === 2 }
+];
+
+// Helpers for cart ids
+function getCartIds() {
+    try {
+        const raw = localStorage.getItem(CART_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCartIds(ids) {
+    localStorage.setItem(CART_KEY, JSON.stringify(ids));
+}
+
+function addIdToCart(id) {
+    const ids = getCartIds();
+    if (!ids.includes(id)) {
+        ids.push(id);
+        saveCartIds(ids);
+    }
+}
+
+function removeIdFromCart(id) {
+    let ids = getCartIds();
+    ids = ids.filter(x => x !== id);
+    saveCartIds(ids);
+}
+
+function toggleIdInCart(id) {
+    const ids = getCartIds();
+    if (ids.includes(id)) {
+        removeIdFromCart(id);
+        return false;
+    } else {
+        addIdToCart(id);
+        return true;
+    }
+}
+
+function isIdSelected(id) {
+    return getCartIds().includes(id);
+}
+
+function isValidCombo(ids) {
+    return COMBOS.some(c => c.rule(ids));
+}
+
 // Функция для загрузки данных об автомобилях через API
 function loadCars() {
+    // try local file first to avoid network hang, then remote backup
     const apiSources = [
-        'https://raw.githubusercontent.com/Haoedon/CarDillerOn/main/cars.json',
-        './cars.json'
+        './cars.json',
+        'https://raw.githubusercontent.com/Haoedon/CarDillerOn/main/cars.json'
     ];
 
     return tryApiSources(apiSources, 0);
@@ -25,7 +82,7 @@ function tryApiSources(sources, index) {
         return Promise.resolve(getDemoCars());
     }
 
-    return fetch(sources[index])
+    return fetchWithTimeout(sources[index], 4000)
         .then(response => {
             if (!response.ok) throw new Error('API не доступен');
             return response.json();
@@ -38,6 +95,20 @@ function tryApiSources(sources, index) {
             console.log(`Источник ${sources[index]} не доступен, пробуем следующий...`);
             return tryApiSources(sources, index + 1);
         });
+}
+
+// fetch with timeout helper to avoid hanging network requests
+function fetchWithTimeout(url, timeout = 4000) {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('timeout')), timeout);
+        fetch(url).then(res => {
+            clearTimeout(timer);
+            resolve(res);
+        }).catch(err => {
+            clearTimeout(timer);
+            reject(err);
+        });
+    });
 }
 
 // Демо-данные на случай недоступности API
@@ -74,12 +145,15 @@ function createCarElement(car) {
     carElement.className = 'car-item';
     carElement.setAttribute('data-car', car.latinName);
 
+    const selected = isIdSelected(car.latinName);
+    const btnText = selected ? 'В корзине' : 'Добавить в корзину';
+
     carElement.innerHTML = `
         <img src="${car.image}" alt="${car.name}" onerror="this.src='imgs/car-placeholder.jpg'">
         <p class="car-price">${car.price}</p>
         <p class="car-name">${car.name}</p>
         <p class="car-specs">${car.specs}</p>
-        <button class="add-to-cart-btn" data-car='${JSON.stringify(car).replace(/'/g, "&#39;")}'>Добавить в корзину</button>
+        <button class="add-to-cart-btn" data-latin="${car.latinName}">${btnText}</button>
     `;
 
     return carElement;
@@ -128,19 +202,16 @@ function updateOrderForm() {
     const orderInfo = document.getElementById('orderInfo');
     const totalPriceElement = document.getElementById('totalPrice');
     const cartDataInput = document.getElementById('cartData');
+    // Build shoppingCart from selected ids and available carsData
+    const selectedIds = getCartIds();
+    const selectedCars = selectedIds.map(id => carsData.find(c => c.latinName === id)).filter(Boolean);
 
-    // Сохраняем данные корзины в скрытое поле формы
-    const orderData = {
-        cars: shoppingCart,
-        configuration: window.selectedConfiguration || null,
-        services: window.selectedServices || [],
-        timestamp: new Date().toISOString()
-    };
-    cartDataInput.value = JSON.stringify(orderData);
+    if (!orderInfo) return; // nothing to update on this page
 
-    if (shoppingCart.length === 0 && !window.selectedConfiguration) {
+    if (selectedCars.length === 0 && !window.selectedConfiguration) {
         orderInfo.innerHTML = '<p class="empty-cart">Корзина пуста. Добавьте автомобили из каталога.</p>';
-        totalPriceElement.textContent = '0 ₽';
+        if (totalPriceElement) totalPriceElement.textContent = '0 ₽';
+        if (cartDataInput) cartDataInput.value = JSON.stringify({ cars: [], timestamp: new Date().toISOString() });
         return;
     }
 
@@ -148,8 +219,8 @@ function updateOrderForm() {
     let orderHTML = '<div class="cart-items">';
 
     // Добавляем автомобили в корзину
-    shoppingCart.forEach((car, index) => {
-        totalPrice += car.priceValue;
+    selectedCars.forEach((car, index) => {
+        totalPrice += car.priceValue || 0;
         orderHTML += `
             <div class="cart-item">
                 <div class="cart-item-info">
@@ -157,7 +228,7 @@ function updateOrderForm() {
                     <span class="cart-item-specs">${car.specs}</span>
                     <span class="cart-item-price">${car.price}</span>
                 </div>
-                <button class="remove-from-cart-btn" data-type="car" data-index="${index}">✕</button>
+                <button class="remove-from-cart-btn" data-type="car" data-latin="${car.latinName}">✕</button>
             </div>
         `;
     });
@@ -202,15 +273,32 @@ function updateOrderForm() {
 
     orderHTML += '</div>';
     orderInfo.innerHTML = orderHTML;
-    totalPriceElement.textContent = formatPrice(totalPrice) + ' ₽';
+    if (totalPriceElement) totalPriceElement.textContent = formatPrice(totalPrice) + ' ₽';
+
+    if (cartDataInput) {
+        const orderData = {
+            cars: getCartIds(),
+            configuration: window.selectedConfiguration || null,
+            services: window.selectedServices || [],
+            timestamp: new Date().toISOString()
+        };
+        cartDataInput.value = JSON.stringify(orderData);
+    }
 
     // Добавляем обработчики для кнопок удаления
     document.querySelectorAll('.remove-from-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
             const type = this.getAttribute('data-type');
             if (type === 'car') {
-                const index = parseInt(this.getAttribute('data-index'));
-                removeFromCart(index);
+                const latin = this.getAttribute('data-latin');
+                if (latin) {
+                    removeIdFromCart(latin);
+                    updateOrderForm();
+                    refreshCheckoutPanel();
+                    // update any add buttons on page
+                    const btn = document.querySelector(`.add-to-cart-btn[data-latin="${latin}"]`);
+                    if (btn) btn.textContent = 'Добавить в корзину';
+                }
             } else if (type === 'config') {
                 if (window.removeConfiguration) window.removeConfiguration();
             } else if (type === 'service') {
@@ -219,6 +307,34 @@ function updateOrderForm() {
             }
         });
     });
+}
+
+// Refresh a checkout panel (if present on catalog page)
+function refreshCheckoutPanel() {
+    const panel = document.getElementById('checkoutPanel');
+    const totalEl = document.getElementById('checkoutTotal');
+    const link = document.getElementById('checkoutLink');
+    const ids = getCartIds();
+    if (!panel) return;
+    if (ids.length === 0) {
+        panel.style.display = 'none';
+        return;
+    }
+    panel.style.display = 'block';
+    // compute total
+    const cars = ids.map(id => carsData.find(c => c.latinName === id)).filter(Boolean);
+    const total = cars.reduce((s, c) => s + (c.priceValue || 0), 0);
+    if (totalEl) totalEl.textContent = formatPrice(total) + ' ₽';
+    // enable link only if combo valid
+    if (link) {
+        if (isValidCombo(ids)) {
+            link.classList.remove('disabled');
+            link.removeAttribute('aria-disabled');
+        } else {
+            link.classList.add('disabled');
+            link.setAttribute('aria-disabled', 'true');
+        }
+    }
 }
 
 // Функция для удаления автомобиля из корзины
@@ -335,8 +451,15 @@ function applyFiltersAndSort() {
     setTimeout(() => {
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const carData = JSON.parse(this.getAttribute('data-car').replace(/&#39;/g, "'"));
-                addToCart(carData);
+                const latin = this.getAttribute('data-latin');
+                // toggle selection in localStorage
+                const nowSelected = toggleIdInCart(latin);
+                // update button text
+                this.textContent = nowSelected ? 'В корзине' : 'Добавить в корзину';
+                // refresh UI components that may exist on the page
+                updateOrderForm();
+                refreshCheckoutPanel();
+                showCartNotification(nowSelected ? `Добавлено` : `Удалено` + `: ${latin}`);
             });
         });
     }, 100);
@@ -376,17 +499,33 @@ document.addEventListener('DOMContentLoaded', function() {
             carsData = cars;
             console.log('Автомобили загружены:', carsData);
 
-            // Инициализируем интерфейс после загрузки данных
-            applyFiltersAndSort();
-            createSortControls();
-            updateOrderForm();
+            // If this is the catalog page (has element that will host cars), render catalog
+            const isOrderPage = !!document.getElementById('orderItems');
+            if (!isOrderPage) {
+                applyFiltersAndSort();
+                createSortControls();
+                updateOrderForm();
+                refreshCheckoutPanel();
+            } else {
+                // Order page: do not render full catalog into <main>
+                // but ensure helper UI (e.g., checkout panel) updated when needed
+                updateOrderForm();
+                refreshCheckoutPanel();
+            }
         })
         .catch(error => {
             console.error('Ошибка загрузки автомобилей:', error);
             // Используем демо-данные в случае ошибки
             carsData = getDemoCars();
-            applyFiltersAndSort();
-            createSortControls();
-            updateOrderForm();
+            const isOrderPage = !!document.getElementById('orderItems');
+            if (!isOrderPage) {
+                applyFiltersAndSort();
+                createSortControls();
+                updateOrderForm();
+                refreshCheckoutPanel();
+            } else {
+                updateOrderForm();
+                refreshCheckoutPanel();
+            }
         });
 });
